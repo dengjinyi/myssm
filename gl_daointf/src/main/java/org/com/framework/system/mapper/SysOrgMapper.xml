@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysOrgMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysOrg">
+            <id column="id" jdbcType="BIGINT" property="id"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+    </resultMap>
+    
+   
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+        id,
+        name,
+        parent_id
+    </sql>
+    
+    <sql id="findOrgCondition">
+    	<where>
+    		1=1 
+        	<if test="name!=null">
+        		and name=#{name}
+        	</if>
+        	<if test="name!=null">
+        		and parent_id=#{parentId}
+        	</if>
+    	</where>
+    </sql>
+    <select id="getOrgById" parameterType="int" resultMap="BaseResultMap">
+    	select 
+    	<include refid="base_columns"/>
+    	from sys_org
+    	where id=#{id}
+    </select>
+    
+    <!-- 查询用户 -->
+    <select id="findOrg" parameterType="org.com.framework.bean.SysOrg" resultMap="BaseResultMap">
+       	select
+        <include refid="base_columns"/>
+        from sys_org
+        <include refid="findOrgCondition"/>
+        
+        limit #{startPos},#{pageSize}
+    </select>
+   
+   <!-- 删除用户 -->
+    <delete id="deleteOrg">
+    	delete from sys_org where id in
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    
+    <!-- 新增用户 -->
+    <insert id="insertOrg" parameterType="org.com.framework.bean.SysOrg" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_org (<include refid="base_columns"/>)
+    	values (
+                #{id},
+                #{name},
+                #{parentId}
+        )
+    </insert>
+   
+   <!-- 修改用户 -->
+   <update id="updateOrg" parameterType="org.com.framework.bean.SysOrg" useGeneratedKeys="true" keyProperty="id">
+   		update sys_org 
+   			set 
+   			name=#{name},
+   			parent_id=#{parentId}
+   			where 
+   			id=#{id}
+   		
+   </update>
+    
+    <select id="findOrgCount" parameterType="org.com.framework.bean.SysOrg" resultType="java.lang.Long">
+    	select count(id) from sys_org 
+    	<include refid="findOrgCondition"/>
+    </select>
+    
+</mapper>

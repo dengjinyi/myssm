@@ -1,0 +1,11 @@
+.error{
+	color:red;
+}
+
+.table-operation{
+	text-align:left;
+	padding:0px 15px;
+}
+.table-operation a{
+	margin:0px 10px;
+}

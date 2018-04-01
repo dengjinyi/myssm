@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysUserMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysUser">
+            <id column="id" jdbcType="INTEGER" property="id"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="password" jdbcType="VARCHAR" property="password"/>
+            <result column="job_no" jdbcType="VARCHAR" property="jobNo"/>
+            <result column="account" jdbcType="VARCHAR" property="account"/>
+            <result column="sex" jdbcType="INTEGER" property="sex"/>
+            <result column="phone" jdbcType="VARCHAR" property="phone"/>
+            <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+            <result column="status" jdbcType="VARCHAR" property="status"/>
+            <result column="org_id" jdbcType="INTEGER" property="orgId"/>
+            <result column="company" jdbcType="VARCHAR" property="company"/>
+            <result column="create_user_id" jdbcType="INTEGER" property="createUserId"/>
+            <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="address" jdbcType="VARCHAR" property="address"/>
+            <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+            <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+            <result column="update_user_id" jdbcType="VARCHAR" property="updateUserId"/>
+            <result column="remark" jdbcType="VARCHAR" property="remark"/>
+            <result column="ROLE_TYPE" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    
+   
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+    	id,
+        job_no,
+        account,
+        name,
+        password,
+        sex,
+        phone,
+        mobile,
+        status,
+        org_id,
+        company,
+        create_user_id,
+        create_time,
+        address,
+        birthday,
+        update_time,
+        update_user_id,
+        remark
+    </sql>
+    
+    <sql id="findUserCondition">
+    	<where>
+    		1=1 
+        	<if test="name!=null and name!=''">
+        		and name=#{name}
+        	</if>
+        	<if test="account!=null and account!=''">
+        		and account=#{account}
+        	</if>
+    	</where>
+    </sql>
+    
+    <!-- 查询用户 -->
+    <select id="findByPage" parameterType="org.com.framework.bean.SysUser" resultMap="BaseResultMap">
+       	select 
+        <include refid="base_columns"/>
+        from sys_user
+        <include refid="findUserCondition"/>
+        
+        limit #{startPos},#{pageSize}
+    </select>
+    
+     <!-- 根据ID查询 -->
+    <select id="getById" parameterType="org.com.framework.bean.SysUser" resultMap="BaseResultMap">
+       	select 
+        <include refid="base_columns"/>
+        from sys_user
+        where id=#{id}
+    </select>
+    
+     <!-- 根据ID查询 -->
+    <select id="findByAccount" resultMap="BaseResultMap">
+       	select 
+        <include refid="base_columns"/>
+        from sys_user
+        where account=#{account}
+    </select>
+   
+   <delete id="deleteById">
+    	delete from sys_user where id =#{id}
+    </delete>
+   
+   <!-- 删除用户 -->
+    <delete id="deleteByIds">
+    	delete from sys_user where id in 
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    
+    <!-- 新增用户 -->
+    <insert id="save" parameterType="org.com.framework.bean.SysUser" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_user (<include refid="base_columns"/>)
+    	values (
+    			#{id},
+                #{jobNo},
+		        #{account},
+		        #{name},
+		        #{password},
+		        #{sex},
+		        #{phone},
+		        #{mobile},
+		        #{status},
+		        #{orgId},
+		        #{company},
+		        #{createUserId},
+		        #{createTime},
+		        #{address},
+		        #{birthday},
+		        #{updateTime},
+		        #{updateUserId},
+		        #{remark}
+        )
+    </insert>
+   
+   <!-- 修改用户 -->
+   <update id="update" parameterType="org.com.framework.bean.SysUser" useGeneratedKeys="true" keyProperty="id">
+   		update sys_user 
+   				set
+   				job_no=#{jobNo},
+   				account=#{account},
+   				name=#{name},
+   				password=#{password},
+   				sex=#{sex},
+   				phone=#{phone},
+   				mobile=#{mobile},
+   				status=#{status},
+   				org_id=#{orgId},
+   				company=#{company},
+   				create_user_id=#{createUserId},
+   				create_time=#{createTime},
+   				address=#{address},
+   				birthday=#{birthday},
+   				update_time=#{updateTime},
+   				update_user_id = #{updateUserId},
+   				remark = #{remark}
+   				where id=#{id}
+   		
+   </update>
+    
+    <select id="findCount" parameterType="org.com.framework.bean.SysUser" resultType="java.lang.Long">
+    	select count(id) from sys_user 
+    	<include refid="findUserCondition"/>
+    </select>
+    
+</mapper>

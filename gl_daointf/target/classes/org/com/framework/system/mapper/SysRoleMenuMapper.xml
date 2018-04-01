@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysRoleMenuMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysRoleMenu">
+            <id column="id" jdbcType="INTEGER" property="id"/>
+            <result column="menu_id" jdbcType="VARCHAR" property="menuId"/>
+            <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+    </resultMap>
+    
+   
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+        id,
+        menu_id,
+        role_id
+    </sql>
+    
+    
+    
+   <!-- 删除用户 -->
+    <delete id="deleteRoleMenu" parameterType="org.com.framework.bean.SysRoleMenu">
+    	delete from sys_role_menu 
+    	<where>
+    		1=1
+    		<if test="menuId!=null and menuId!=''">
+    			and menu_id=#{menuId}
+    		</if>
+    		<if test="roleId!=null and roleId!=''">
+    			and role_id=#{roleId}
+    		</if>
+    	</where>
+    </delete>
+    
+    <!-- 新增用户 -->
+    <insert id="insertRoleMenu" parameterType="org.com.framework.bean.SysRoleMenu" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_role_menu (<include refid="base_columns"/>)
+    	values (
+                #{id},
+		        #{menuId},
+		        #{roleId}
+        )
+    </insert>
+   
+    <!-- 查询用户 -->
+    <select id="findRoleMenu" parameterType="org.com.framework.bean.SysRoleMenu" resultMap="BaseResultMap">
+       	select 
+        <include refid="base_columns"/>
+        from sys_role_menu 
+        <where>
+        	1=1
+        	<if test="menuId!=null and menuId!=''">
+        		and menu_id=#{menuId}
+        	</if>
+        	<if test="roleId!=null and roleId!=''">
+        		role_id=#{roleId}
+        	</if>
+        </where>
+    </select>
+    
+</mapper>

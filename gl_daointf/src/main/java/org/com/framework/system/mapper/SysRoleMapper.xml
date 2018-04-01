@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysRoleMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysRole">
+            <id column="id" jdbcType="BIGINT" property="id"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+        name,
+        remark
+    </sql>
+    
+    <sql id="findRoleCondition">
+    	<where>
+    		1=1 
+        	<if test="name!=null">
+        		and name=#{name}
+        	</if>
+    	</where>
+    </sql>
+    <select id="getRoleById" parameterType="int" resultMap="BaseResultMap">
+    	select id,
+    	<include refid="base_columns"/>
+    	from sys_role
+    	where id=#{id}
+    </select>
+    
+    <!-- 查询用户 -->
+    <select id="findRole" parameterType="org.com.framework.bean.SysRole" resultMap="BaseResultMap">
+       	select id,
+        <include refid="base_columns"/>
+        from sys_role
+        <include refid="findRoleCondition"/>
+        
+        limit #{startPos},#{pageSize}
+    </select>
+   
+   <!-- 删除用户 -->
+    <delete id="deleteRole">
+    	delete from sys_role where id in
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    
+    <!-- 新增用户 -->
+    <insert id="insertRole" parameterType="org.com.framework.bean.SysRole" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_role (<include refid="base_columns"/>)
+    	values (
+                #{name},
+                #{remark}
+        )
+    </insert>
+   
+   <!-- 修改用户 -->
+   <update id="updateRole" parameterType="org.com.framework.bean.SysRole" useGeneratedKeys="true" keyProperty="id">
+   		update sys_role 
+   			set 
+   			name=#{name},
+   			remark=#{remark}
+   			where 
+   			id=#{id}
+   		
+   </update>
+    
+    <select id="findRoleCount" parameterType="org.com.framework.bean.SysRole" resultType="java.lang.Long">
+    	select count(id) from sys_role 
+    	<include refid="findRoleCondition"/>
+    </select>
+    
+</mapper>

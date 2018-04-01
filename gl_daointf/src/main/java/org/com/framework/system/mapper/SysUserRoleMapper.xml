@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysUserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysUserRole">
+            <id column="id" jdbcType="INTEGER" property="id"/>
+            <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+            <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+    </resultMap>
+    
+   
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+        id,
+        user_id,
+        role_id
+    </sql>
+    
+    
+    <!-- 查询用户 -->
+    <select id="findUserRole" parameterType="org.com.framework.bean.SysUserRole" resultMap="BaseResultMap">
+       	select 
+        <include refid="base_columns"/>
+        from sys_user_role 
+        <where>
+        	1=1
+        	<if test="userId!=null and userId!=''">
+        		and user_id=#{userId}
+        	</if>
+        	<if test="roleId!=null and roleId!=''">
+        		role_id=#{roleId}
+        	</if>
+        </where>
+        
+    </select>
+    
+   <!-- 删除用户 -->
+    <delete id="deleteUserRole" parameterType="org.com.framework.bean.SysUserRole">
+    	delete from sys_user_role 
+    	<where>
+    		1=1
+    		<if test="userId!=null and userId!=''">
+    			and user_id=#{userId}
+    		</if>
+    		<if test="roleId!=null and roleId!=''">
+    			and role_id=#{roleId}
+    		</if>
+    	</where>
+    </delete>
+    
+    <!-- 新增用户 -->
+    <insert id="insertUserRole" parameterType="org.com.framework.bean.SysUserRole" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_user_role (<include refid="base_columns"/>)
+    	values (
+                #{id},
+		        #{userId},
+		        #{roleId}
+        )
+    </insert>
+   
+    
+</mapper>

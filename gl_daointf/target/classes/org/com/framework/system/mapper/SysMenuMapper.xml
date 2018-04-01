@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.com.framework.system.mapper.SysMenuMapper">
+
+    <resultMap id="BaseResultMap" type="org.com.framework.bean.SysMenu">
+            <id column="id" jdbcType="BIGINT" property="id"/>
+            <result column="name" jdbcType="VARCHAR" property="name"/>
+            <result column="url" jdbcType="VARCHAR" property="url"/>
+            <result column="parent_id" jdbcType="VARCHAR" property="pId"/>
+    </resultMap>
+    
+   
+    <!-- 显示的基础字段 -->
+    <sql id="base_columns">
+        id,
+        name,
+        url,
+        parent_id
+    </sql>
+    
+    <sql id="findMenuCondition">
+    	<where>
+    		1=1 
+        	<if test="name!=null">
+        		and name=#{name}
+        	</if>
+        	<if test="name!=null">
+        		and parent_id=#{parentId}
+        	</if>
+    	</where>
+    </sql>
+    <select id="getMenuById" parameterType="int" resultMap="BaseResultMap">
+    	select 
+    	<include refid="base_columns"/>
+    	from sys_menu
+    	where id=#{id}
+    </select>
+    
+    
+    <!-- 查询菜单 -->
+    <select id="findByPage" parameterType="org.com.framework.bean.SysMenu" resultMap="BaseResultMap">
+       	select
+        <include refid="base_columns"/>
+        from sys_menu
+        <include refid="findMenuCondition"/>
+        
+        limit #{startPos},#{pageSize}
+    </select>
+    
+    <select id="findList" parameterType="org.com.framework.bean.SysMenu" resultMap="BaseResultMap">
+       	select
+        <include refid="base_columns"/>
+        from sys_menu
+        <include refid="findMenuCondition"/>
+        
+    </select>
+   
+   <!-- 删除用户 -->
+    <delete id="deleteMenu">
+    	delete from sys_menu where id in
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+    
+    <select id="findByPids" resultType="java.lang.Long">
+    	select count(id) from sys_menu where parent_id in
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </select>
+    
+    <!-- 新增用户 -->
+    <insert id="insertMenu" parameterType="org.com.framework.bean.SysMenu" useGeneratedKeys="true" keyProperty="id">
+    	insert into sys_menu (<include refid="base_columns"/>)
+    	values (
+                #{id},
+                #{name},
+                #{url},
+                #{pId}
+        )
+    </insert>
+   
+   <!-- 修改用户 -->
+   <update id="updateMenu" parameterType="org.com.framework.bean.SysMenu" useGeneratedKeys="true" keyProperty="id">
+   		update sys_menu 
+   			set 
+   			name=#{name},
+   			url=#{url}, 
+   			parent_id=#{pId}
+   			where 
+   			id=#{id}
+   		
+   </update>
+    
+    <select id="findMenuCount" parameterType="org.com.framework.bean.SysMenu" resultType="java.lang.Long">
+    	select count(id) from sys_menu 
+    	<include refid="findMenuCondition"/>
+    </select>
+    
+</mapper>
